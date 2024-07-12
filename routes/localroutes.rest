@@ -1,0 +1,29 @@
+GET http://localhost:8000/movies
+
+###
+
+GET http://localhost:8000/movies/6690d1bf855fd4d4503ef0f1
+
+###
+
+POST http://localhost:8000/movies
+Content-Type: application/json
+
+{
+    "title": "Jaws",
+    "director": "Steven Spielberg"
+}
+
+###
+
+DELETE http://localhost:8000/movies/6690d1bf855fd4d4503ef0f1
+
+###
+
+PATCH http://localhost:8000/movies/6690d1b4855fd4d4503ef0ef/
+Content-Type: application/json
+
+{
+    "title": "Edward Scissor Hands",
+    "director": "Tim Burton"
+}
