@@ -1,21 +1,20 @@
 {
-  "name": "crud-api-deployment",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "mongoose": "^8.5.0",
-    "nodemon": "^3.1.4",
-    "path": "^0.12.7"
-  }
+    "name": "apiwClient",
+    "version": "1.0.0",
+    "engines": {
+        "node": "16.10.0"
+    },
+    "scripts": {
+        "install-reactjs": "npm install --prefix reactjs",
+        "install-api": "npm install --prefix api",
+        "build-reactjs": "npm run build --prefix reactjs",
+        "heroku-postbuild": "concurrently \"npm:install-*\"; concurrently \"npm:build-*\"; ",
+        "start": "npm start --prefix api",
+        "dev:react": "concurrently --raw \"npm run api\" \"npm run react\"",
+        "react": "cd reactjs && npm run start",
+        "api": "cd api; nodemon server.js"
+    },
+    "dependencies": {
+        "concurrently": "^8.2.2"
+    }
 }
