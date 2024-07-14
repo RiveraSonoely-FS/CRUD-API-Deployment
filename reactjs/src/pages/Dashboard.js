@@ -9,7 +9,8 @@ function Dashboard() {
 
   const [values, setValues] = useState({
     title: '',
-    director: ''
+    director: '',
+    year: ''
   });
 
   const API_BASE = process.env.NODE_ENV === 'development'
@@ -44,7 +45,7 @@ function Dashboard() {
         },
         body: JSON.stringify(values)
       });
-      setValues({ title: '', director: '' });
+      setValues({ title: '', director: '', year: '' });
       await getMovies();
     } catch (error) {
       setError(error.message || 'Unexpected Error');
@@ -70,36 +71,51 @@ function Dashboard() {
     <div className="App">
       <header className="App-header">
         <h1>Movies</h1>
-        <Link to="/">Home</Link>
+        <Link to="/" className="App-link">Home</Link>
         {loading && <p>Loading...</p>}
         {error && <p className="error">{error}</p>}
         <ul>
           {movies.map((movie) => (
             <li key={movie._id}>
-              <Link to={`/movie/${movie._id}`}>{movie.title}</Link>
+              <Link to={`/movie/${movie._id}`} className="App-link">{movie.title}</Link>
             </li>
           ))}
         </ul>
         <form onSubmit={handleSubmit}>
           <label>
-            Title:
+            Title: <space/>
             <input
               type="text"
               name="title"
+              className="App-textbox"
               value={values.title}
               onChange={handleInputChanges}
             />
           </label>
+          <br/> <br/>
           <label>
-            Director:
+            Director: <space/>
             <input
               type="text"
               name="director"
+              className="App-textbox"
               value={values.director}
               onChange={handleInputChanges}
             />
           </label>
-          <input type="submit" value="Submit" />
+          <br/> <br/>
+          <label>
+            Year: <space/>
+            <input
+              type="text"
+              name="year"
+              className="App-textbox"
+              value={values.year}
+              onChange={handleInputChanges}
+            />
+          </label>
+          <br/> <br/>
+          <input type="submit" value="Submit" className="App-btn" />
         </form>
       </header>
     </div>
