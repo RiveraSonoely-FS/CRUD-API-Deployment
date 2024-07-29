@@ -2,12 +2,11 @@ const express = require('express');
 const passport = require('passport')
 
 const passportService = require('../services/passport')
+
 const protectedRoute = passport.authenticate('jwt', { session: false })
 const router = express.Router();
 
 const Movie = require('../models/movie');
-
-//GET, POST, PATCH, DELETE
 
 const getMovie = async (req, res, next) => {
     let movie
@@ -23,7 +22,6 @@ const getMovie = async (req, res, next) => {
     next();
 }
 
-//GET ALL
 router.get('/', protectedRoute,  async (req,res) => {
     try{
         const movies = await Movie.find()
@@ -33,12 +31,10 @@ router.get('/', protectedRoute,  async (req,res) => {
     }
 });
 
-//GET ONE
 router.get('/:id', getMovie, async (req,res) => {
     res.json(res.movie)
 });
 
-//POST CREATE
 router.post('/', async (req,res) => {
     const movie = new Movie({
         title: req.body.title,
@@ -53,7 +49,6 @@ router.post('/', async (req,res) => {
     }
 });
 
-//PATCH UPDATE
 router.patch('/:id', getMovie, async (req,res) => {
     if(req.body.title != null){
         res.movie.title = req.body.title
@@ -72,7 +67,6 @@ router.patch('/:id', getMovie, async (req,res) => {
     }
 });
 
-//DELETE
 router.delete('/:id', getMovie, async (req,res) => {
     try {
         await res.movie.deleteOne();

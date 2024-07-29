@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
+
+import AuthService from "../pages/services/auth.service";
+import MoviesService from "../pages/services/movies.service"
 
 function Dashboard() {
   const [movies, setMovies] = useState([]);
@@ -13,11 +16,13 @@ function Dashboard() {
     year: ''
   });
 
+  const navigate = useNavigate();
+
   const API_BASE = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8000/api/v1'
     : process.env.REACT_APP_BASE_URL;
 
-  const getMovies = async () => {
+  const getMovies = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE}/movies`);
@@ -29,11 +34,22 @@ function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_BASE]);
 
   useEffect(() => {
-    getMovies();
-  }, [API_BASE]);
+    MoviesService.getAllPrivateMovies().then(
+      response => {
+        setMovies(response.data)
+      },
+      (error) => {
+        console.log("Sercured Page Error:", error.response)
+        if(error.response && error.respoinse.status === 403) {
+          AuthService.logout()
+          navigate('/login')
+        }
+      }
+    )
+  }, [navigate]);
 
   const createMovie = async () => {
     setLoading(true);
@@ -56,7 +72,11 @@ function Dashboard() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    createMovie();
+    if (values.title && values.director && values.year) {
+      createMovie();
+    } else {
+      setError('All fields are required');
+    }
   };
 
   const handleInputChanges = (event) => {
@@ -70,7 +90,7 @@ function Dashboard() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Movies</h1>
+        <h1>Movie Dashboard</h1>
         <Link to="/" className="App-link">Home</Link>
         {loading && <p>Loading...</p>}
         {error && <p className="error">{error}</p>}
@@ -83,7 +103,7 @@ function Dashboard() {
         </ul>
         <form onSubmit={handleSubmit}>
           <label>
-            Title: <space/>
+            Title:
             <input
               type="text"
               name="title"
@@ -92,9 +112,9 @@ function Dashboard() {
               onChange={handleInputChanges}
             />
           </label>
-          <br/> <br/>
+          <br />
           <label>
-            Director: <space/>
+            Director:
             <input
               type="text"
               name="director"
@@ -103,9 +123,9 @@ function Dashboard() {
               onChange={handleInputChanges}
             />
           </label>
-          <br/> <br/>
+          <br />
           <label>
-            Year: <space/>
+            Year:
             <input
               type="text"
               name="year"
@@ -114,7 +134,7 @@ function Dashboard() {
               onChange={handleInputChanges}
             />
           </label>
-          <br/> <br/>
+          <br />
           <input type="submit" value="Submit" className="App-btn" />
         </form>
       </header>

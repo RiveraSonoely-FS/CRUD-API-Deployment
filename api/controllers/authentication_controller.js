@@ -10,6 +10,11 @@ const tokenForUser = user => {
     );
 };
 
+exports.signin = (req, res, next) => {
+    const user = req.user;
+    res.json({ token: tokenForUser(user), user_id: user._id });
+};
+
 exports.signup = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -33,4 +38,3 @@ exports.signup = async (req, res, next) => {
         next(error);
     }
 };
-
